@@ -2,27 +2,30 @@
 This code uses the micropython pyboard with an XBee.
 The orientation() function can be called to use the pyboard's on-board accelerometer for leveling
 '''
-
-
 import pyb
 import math
 from pyb import UART
 from machine import Pin
 import time
 
-uart = UART(3, baudrate=9600)      # create UART object
-CW = -90
-CCW = 90
-Stop = -10
-daServo = pyb.Servo(1)
-completed=0
-accel = pyb.Accel()
+#Peripheral(s) Initialization
+uart = UART(3, baudrate=9600)       # create UART object
+accel = pyb.Accel()                 # create object to access Pyboard's built-in accelerometer
+orientServo = pyb.Servo(1)          # Create a servo object 'orientServo' as a pin1 connection\
 
 
-def orientation():
+#Constants Definitions
+CW = -90                            # Value for Clockwise Servo Rotation
+CCW = 90                            # Value for Counterclockwise Servo Rotation
+Stop = -10                          # Value to Stop Servo Rotation
+thresh_xacc = 22                    # Value of the x-axis accelerometer reading once airframe is considered to be in the proper orientation.
+
+# Orientation Function. Accepts no arguments.
+# Required Global Objects/Definitions: {uart, orientServo, accel, CW, CCW, Stop}
+def orientation():                  
     completed=0
     uart.write('Stopping Servo')
-    daServo.speed(Stop)
+    orientServo.speed(Stop)
     uart.write('Waiting for Signal')
 
     keySet = 0
@@ -50,29 +53,28 @@ def orientation():
         if state_x > 0:
             if state_y > 0:
                 uart.write('CCW')
-                while accel.x()< 22:
-                    daServo.speed(CCW)
+                while accel.x()< thresh_xacc:
+                    orientServo.speed(CCW)
                 completed=1
-                daServo.speed(Stop)
+                orientServo.speed(Stop)
             if state_y < 0:
                 uart.write('CW')
-                while accel.x()< 22:
-                    daServo.speed(CW)
+                while accel.x()< thresh_xacc:
+                    orientServo.speed(CW)
                 completed=1
-                daServo.speed(Stop)
-
+                orientServo.speed(Stop)
         elif state_x < 0:
             if state_y > 0:
                 uart.write('CW')
-                while accel.x()< 22:
-                    daServo.speed(CW)
+                while accel.x()< thresh_xacc:
+                    orientServo.speed(CW)
                 completed=1
-                daServo.speed(Stop)
+                orientServo.speed(Stop)
             if state_y < 0:
                 uart.write('CCW')
-                while accel.x()< 22:
-                    daServo.speed(CCW)
+                while accel.x()< thresh_xacc:
+                    orientServo.speed(CCW)
                 completed=1
-                daServo.speed(Stop)
+                orientServo.speed(Stop)
 
-orientation()
+orientation() #Call the function
