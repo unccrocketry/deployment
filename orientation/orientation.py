@@ -1,6 +1,5 @@
 '''
-This code uses the micropython pyboard with an XBee.
-The orientation() function can be called to use the pyboard's on-board accelerometer for leveling
+Implementing the orientation feature as a callable function.
 '''
 import pyb
 import math
@@ -47,31 +46,32 @@ def orientation():
         state_x = math.copysign(STATEX,xacc)    #Returns (-1/+1) for (-x/+x) accelerometer readings
         state_y = math.copysign(STATEY,yacc)    #Returns (-1/+1) for (-y/+y) accelerometer readings
 
-        if state_x > 0:
+        #Identifying which quadrant the acceleration vector falls on the unit circle and the required direction to bring platform to level.
+        if state_x > 0:         
             if state_y > 0:
                 uart.write('CCW')
-                while accel.x()< thresh_xacc:
-                    orientServo.speed(CCW)
-                completed=1
-                orientServo.speed(Stop)
+                while accel.x()< thresh_xacc:   #Execute until x-acceleration has reached threshold value
+                    orientServo.speed(CCW)      #Set direction of servo to CCW        
+                completed=1                     #Make sure to break out of the while loop
+                orientServo.speed(Stop)         #Stop spinning servo(s)
             if state_y < 0:
                 uart.write('CW')
-                while accel.x()< thresh_xacc:
+                while accel.x()< thresh_xacc:   #Execute until x-acceleration has reached threshold value
                     orientServo.speed(CW)
-                completed=1
-                orientServo.speed(Stop)
+                completed=1                     #Make sure to break out of the while loop
+                orientServo.speed(Stop)         
         elif state_x < 0:
             if state_y > 0:
                 uart.write('CW')
-                while accel.x()< thresh_xacc:
-                    orientServo.speed(CW)
-                completed=1
+                while accel.x()< thresh_xacc:   #Execute until x-acceleration has reached threshold value
+                    orientServo.speed(CW)       
+                completed=1                     #Make sure to break out of the while loop
                 orientServo.speed(Stop)
             if state_y < 0:
                 uart.write('CCW')
-                while accel.x()< thresh_xacc:
+                while accel.x()< thresh_xacc:   #Execute until x-acceleration has reached threshold value
                     orientServo.speed(CCW)
-                completed=1
+                completed=1                     #Make sure to break out of the while loop
                 orientServo.speed(Stop)
 
 orientation() #Call the function
