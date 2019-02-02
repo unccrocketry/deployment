@@ -5,7 +5,7 @@ This repository holds code relating to the UAV's deployment procedure.
 * (x2) XBee (Rx/Tx Pair)
 * Continuous Servos
 
-### [deployment_main.py](https://github.com/unccrocketry/deployment/blob/master/deployment_main.py)
+### [deployment_code_v_x_x.py](https://github.com/unccrocketry/deployment/blob/master/deployment_code_v1_5.py)
 > This file implements the full deployment logical procedure.
 
 
