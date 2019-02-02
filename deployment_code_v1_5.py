@@ -31,7 +31,9 @@ B_led = pyb.LED(4)
 
 #Constants Definition for Orientation
 CW = 99
-CCW = -99
+CCW = 99 #Make both directions the same value. We don't care to rotate in two directions. 
+#CCW = -99 #Uncomment this to add a second direction for possible rotation.
+
 Stop = 0
 
 #Timers for the deployment process
